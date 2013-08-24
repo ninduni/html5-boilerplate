@@ -1,14 +1,11 @@
 <?php
 
-require_once("constants.php");
-
-
 /**
  * Facilitates debugging by dumping contents of variable
  * to browser.
  */
 function dump($variable){
-	require("dump.php");
+	require(BPATH."inc/dump.php");
 	exit;
 }
 

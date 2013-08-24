@@ -18,18 +18,18 @@ interface iSugarDB {
 * A set of abstractions for working with a DB with a PDO connection
 */
 class sugarPDO implements iSugarDB {
-	private static $handle;
+	private $handle;
 
 	public function __construct($dbinfo) {
 		// try to connect to database
-		if (!isset($this->$handle)){
+		if (!isset($this->handle)) {
 			try {
 				// connect to database
-				$this->$handle = new PDO("mysql:dbname=" . $dbinfo['database'] . ";host=" . 
+				$this->handle = new PDO("mysql:dbname=" . $dbinfo['database'] . ";host=" . 
 					$dbinfo['server'], $dbinfo['username'], $dbinfo['password']);
 
 				// ensure that PDO::prepare returns false when passed invalid SQL
-				$this->$handle->setAttribute(PDO::ATTR_EMULATE_PREPARES, false); 
+				$this->handle->setAttribute(PDO::ATTR_EMULATE_PREPARES, false); 
 			}
 			catch (Exception $e){
 				// trigger error
@@ -41,10 +41,10 @@ class sugarPDO implements iSugarDB {
 
 	public function query($sql, $vars) {
 		// prepare SQL statement
-		$statement = $this->$handle->prepare($sql);
+		$statement = $this->handle->prepare($sql);
 		if ($statement === false){
 			// trigger error
-			$error = $this->$handle->errorInfo();
+			$error = $this->handle->errorInfo();
 			trigger_error($error[2], E_USER_ERROR);
 			exit;
 		}
@@ -60,8 +60,8 @@ class sugarPDO implements iSugarDB {
 		}
 	}
 
-	public function update($sql) {
-		return query($sql,array());
+	public function update($sql, $vars) {
+		return query($sql,$vars);;
 	}
 }
 
@@ -154,7 +154,7 @@ class sugarMysqli implements iSugarDB {
  * so steps are taken to do this in PHP before executing anything.
  */
 class sugarAccessOdbc implements iSugarDB {
-	private static $conn;
+	private $conn;
 	
 	public function __construct($file, $username, $pass) {
 		$this->conn = 
